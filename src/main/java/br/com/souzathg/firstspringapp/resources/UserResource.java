@@ -2,6 +2,7 @@ package br.com.souzathg.firstspringapp.resources;
 
 import br.com.souzathg.firstspringapp.entities.User;
 import br.com.souzathg.firstspringapp.services.UserService;
+import io.micrometer.core.ipc.http.HttpSender.Response;
 
 import java.net.URI;
 import java.util.List;
@@ -44,6 +45,12 @@ public class UserResource {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User obj) {
+        obj = service.update(id, obj);
+        return ResponseEntity.ok().body(obj);
     }
 
 }
