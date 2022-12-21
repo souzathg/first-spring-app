@@ -1,6 +1,0 @@
-spring:
-  datasource:
-    url: jbdc:${DATABASE_URL}
-    username: ${PGUSER}
-    password: ${PGPASSWORD}
-    name: first-spring-app
