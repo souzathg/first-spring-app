@@ -1,17 +1,17 @@
 package br.com.souzathg.firstspringapp.services;
 
-import java.util.List;
-import java.util.Optional;
-
+import br.com.souzathg.firstspringapp.entities.User;
+import br.com.souzathg.firstspringapp.repositories.UserRepository;
 import br.com.souzathg.firstspringapp.services.exceptions.DatabaseException;
 import br.com.souzathg.firstspringapp.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import br.com.souzathg.firstspringapp.entities.User;
-import br.com.souzathg.firstspringapp.repositories.UserRepository;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -44,9 +44,13 @@ public class UserService {
     }
 
     public User update(Long id, User obj) {
-        User entity = repository.getReferenceById(id);
-        updateData(entity, obj);
-        return repository.save(entity);
+        try {
+            User entity = repository.getReferenceById(id);
+            updateData(entity, obj);
+            return repository.save(entity);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException(id);
+        }
     }
 
     private void updateData(User entity, User obj) {
