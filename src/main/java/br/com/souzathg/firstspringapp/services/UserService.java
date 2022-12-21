@@ -3,8 +3,11 @@ package br.com.souzathg.firstspringapp.services;
 import java.util.List;
 import java.util.Optional;
 
+import br.com.souzathg.firstspringapp.services.exceptions.DatabaseException;
 import br.com.souzathg.firstspringapp.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import br.com.souzathg.firstspringapp.entities.User;
@@ -31,7 +34,13 @@ public class UserService {
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
+        try {
+            repository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(e.getMessage());
+        }
     }
 
     public User update(Long id, User obj) {
